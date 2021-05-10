@@ -1,0 +1,62 @@
+version: '3'
+services:
+    postgres:
+        image: 'postgres:latest'
+        environment:
+            - POSTGRES_PASSWORD=postgres_password
+    
+    redis:
+        image: 'redis:latest'
+    
+    nginx:
+        # always keep nginx running
+        restart: always
+        build: 
+            dockerfile: Dockerfile.dev
+            context: ./nginx
+        ports:
+            # mappin local computer with nginx
+            - '3050:80'
+    # server: we can use this but we are removeing server service bcz it might be possible that nginx has server as protected keyword
+    api:
+        build:
+            dockerfile: Dockerfile.dev
+            context: ./server
+        volumes: 
+            - /app/node_modules
+            # look inside server folder and copy all thing into "app folder"except node module mention above
+            - ./server:/app
+    
+        environment: 
+            # Don't put spaces in between valriable and the equal sign and value
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - PGUSER=postgres
+            # PGHOST = name of postgres service
+            - PGHOST=postgres
+            - PGDATABASE=postgres
+            - PGPASSWORD=postgres_password
+            - PGPORT=5432
+    
+    client:
+        stdin_open: true
+        build: 
+            dockerfile: Dockerfile.dev
+            context: ./client
+        
+        volumes:
+            - /app/node_modules
+            - ./client:/app
+        
+    worker:
+        build: 
+            dockerfile: Dockerfile.dev
+            context: ./worker
+        
+        volumes: 
+            - /app/node_modules
+            - ./worker:/app
+        
+        environment:
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379

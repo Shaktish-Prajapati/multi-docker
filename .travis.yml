@@ -1,0 +1,27 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  # test can only be run in develoment dockerfile
+  - docker build -t shaktishprajapati/react-test-f ./client/Dockerfile.dev ./client
+  # To build and run other project follow below
+  # - docker build myotherproject
+script:
+#  to run the myotherproject
+# - docker run myotherproject runmytest
+  - docker run -e CI=true shaktishprajapati/react-test npm test -- --coverage
+
+after_success:
+# buil images
+  - docker build -t shaktishprajapati/multi-client ./client
+  - docker build -t shaktishprajapati/multi-nginx ./nginx
+  - docker build -t shaktishprajapati/multi-server ./server
+  - docker build -t shaktishprajapati/multi-worker ./worker
+  # Log in to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push shaktishprajapati/multi-client
+  - docker push shaktishprajapati/multi-nginx
+  - docker push shaktishprajapati/multi-server
+  - docker push shaktishprajapati/multi-worker
