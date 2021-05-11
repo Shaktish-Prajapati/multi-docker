@@ -21,7 +21,19 @@ after_success:
   # Log in to docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Take those images and push them to docker hub
-  - docker push $DOCKER_ID/multi-client
-  - docker push $DOCKER_ID/multi-nginx
-  - docker push $DOCKER_ID/multi-server
-  - docker push $DOCKER_ID/multi-worker
+  - docker push shaktishprajapati/multi-client
+  - docker push shaktishprajapati/multi-nginx
+  - docker push shaktishprajapati/multi-server
+  - docker push shaktishprajapati/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'ap-south-1'
+  app: 'multi-docker'
+  env: 'MultiDocker-env'
+  bucket_name: 'elasticbeanstalk-ap-south-1-720169152709'
+  bucket_path: 'docker-multi'
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
