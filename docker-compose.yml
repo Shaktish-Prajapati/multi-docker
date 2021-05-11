@@ -9,6 +9,9 @@ services:
         image: 'redis:latest'
     
     nginx:
+        depends_on: 
+            - api
+            - client
         # always keep nginx running
         restart: always
         build: 

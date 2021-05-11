@@ -1,4 +1,6 @@
 sudo: required
+language: generic
+
 services:
   - docker
 
@@ -30,7 +32,7 @@ deploy:
   provider: elasticbeanstalk
   region: 'ap-south-1'
   app: 'multi-docker'
-  env: 'MultiDocker-env'
+  env: 'Multidocker-env'
   bucket_name: 'elasticbeanstalk-ap-south-1-720169152709'
   bucket_path: 'docker-multi'
   on:
