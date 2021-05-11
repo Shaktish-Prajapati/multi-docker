@@ -38,7 +38,7 @@ services:
             # PGHOST = name of postgres service
             - PGHOST=postgres
             - PGDATABASE=postgres
-            - PGPASSWORD=postgres_password
+            - PGPASSWORD=postgrespassword
             - PGPORT=5432
     
     client:
